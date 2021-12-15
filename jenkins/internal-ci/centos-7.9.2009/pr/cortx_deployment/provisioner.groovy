@@ -80,7 +80,15 @@ pipeline {
 						echo -e "Building Provisioner CLI RPM's"
 						sh ./cli/buildrpm.sh -g \$(git rev-parse --short HEAD) -e $VERSION -b ${BUILD_NUMBER}
 					"""
-				
+				    
+                    sh encoding: 'UTF-8', label: 'cortx-setup', script: """
+                        if [ -f "./devops/rpms/node_cli/node_cli_buildrpm.sh" ]; then
+                            sh ./devops/rpms/node_cli/node_cli_buildrpm.sh -g \$(git rev-parse --short HEAD) -e $version -b ${BUILD_NUMBER}
+                        else
+                            echo "node_cli package creation is not implemented"
+                        fi
+                    """
+
 					sh encoding: 'UTF-8', label: 'api', script: '''
 					    echo -e "Setup Provisioner python API"
 						bash ./devops/rpms/api/build_python_api.sh -vv --out-dir /root/rpmbuild/RPMS/x86_64/ --pkg-ver ${BUILD_NUMBER}_git$(git rev-parse --short HEAD)
@@ -201,6 +209,13 @@ pipeline {
                 NODE_PASS = "${HOST_PASS == '-' ? NODE_DEFAULT_SSH_CRED_PSW : HOST_PASS}"
 
                 NODE_UN_PASS_CRED_ID = "mini-prov-change-pass"
+                DNS_SERVER1 = credentials("DNS_SERVER1")
+                DNS_SERVER2 = credentials("DNS_SERVER2")
+                SEARCH_DOMAIN1 = credentials("SEARCH_DOMAIN1")
+                SEARCH_DOMAIN2 = credentials("SEARCH_DOMAIN2")
+                SEAGATE_TIME_SERVER = credentials("SEAGATE_TIME_SERVER")
+                DNS_SERVERS = "${DNS_SERVER1} ${DNS_SERVER2}"
+                SEARCH_DOMAINS = "${SEARCH_DOMAIN1} ${SEARCH_DOMAIN2}"
                 SETUP_TYPE = "single"
             }
             steps {
@@ -218,10 +233,10 @@ pipeline {
                     catchError {
                         
                         dir('cortx-re') {
-                            checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', depth: 1, honorRefspec: true, noTags: true, reference: '', shallow: true], [$class: 'AuthorInChangelog']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'cortx-admin-github', url: 'https://github.com/Seagate/cortx-re']]])
+                            checkout([$class: 'GitSCM', branches: [[name: '*/update-pr-deployments']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', depth: 1, honorRefspec: true, noTags: true, reference: '', shallow: true], [$class: 'AuthorInChangelog']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'cortx-admin-github', url: 'https://github.com/gauravchaudhari02/cortx-re']]])
                         }
 
-                        runAnsible("00_PREPARE, 01_DEPLOY_PREREQ, 02_1_PRVSNR_BOOTSTRAP, 02_2_PLATFORM_SETUP, 02_3_PREREQ, 02_4_UTILS, 02_5_IO_PATH, 02_6_CONTROL_PATH, 02_7_HA, 02_DEPLOY_VALIDATE, 03_VALIDATE")
+                        runAnsible("00_PREPARE, 01_DEPLOY_PREREQ, 02_FACTORY_MANUFACTURING, 03_FIELD_DEPLOYMENT, 04_COMPONENT_DEPLOYMENT, VALIDATE_DEPLOYMENT, 05_VALIDTAE_CLUSTER")
 
                     }
 
@@ -244,9 +259,11 @@ pipeline {
                     }
 
                     hctlStatus = ""
-                    if ( fileExists('artifacts/srvnode1/cortx_deployment/log/hctl_status.log') && currentBuild.currentResult == "SUCCESS" ) {
+                    pcsStatus = ""
+                    if ( fileExists('artifacts/srvnode1/cortx_deployment/log/hctl_status.log') && fileExists('artifacts/srvnode1/cortx_deployment/log/pcs_status.log') && currentBuild.currentResult == "SUCCESS" ) {
                         hctlStatus = readFile(file: 'artifacts/srvnode1/cortx_deployment/log/hctl_status.log')
-                        MESSAGE = "Cortx Stack VM Deployment Success"
+                        pcsStatus = readFile(file: 'artifacts/srvnode1/cortx_deployment/log/pcs_status.log')
+                        MESSAGE = "1 Node - Cortx Stack VM Deployment Success for the build ${build_id}"
                         ICON = "accept.gif"
                         STATUS = "SUCCESS"
                     } else {
@@ -304,22 +321,28 @@ def getTestMachine(host, user, pass) {
 
 // Run Ansible playbook to perform deployment
 def runAnsible(tags) {
-    
-    dir("cortx-re/scripts/deployment") {
-        ansiblePlaybook(
-            playbook: 'cortx_deploy_vm.yml',
-            inventory: 'inventories/vm_deployment/hosts_srvnodes',
-            tags: "${tags}",
-            extraVars: [
-                "HOST"          : [value: "${NODES}", hidden: false],
-                "CORTX_BUILD"   : [value: "${CORTX_BUILD}", hidden: false] ,
-                "CLUSTER_PASS"  : [value: "${NODE_PASS}", hidden: false],
-                "SETUP_TYPE"    : [value: "${SETUP_TYPE}", hidden: false],
-            ],
-            extras: '-v',
-            colorized: true
-        )
-    }
+    withCredentials([usernamePassword(credentialsId: 'CONTROLLER_CREDS', passwordVariable: 'CONTROLLER_PASSWORD', usernameVariable: 'CONTROLLER_USERNAME')]) {
+        dir("cortx-re/scripts/deployment") {
+            ansiblePlaybook(
+                playbook: 'cortx_deploy_vm_factory.yml',
+                inventory: 'inventories/vm_deployment/hosts_srvnodes',
+                tags: "${tags}",
+                extraVars: [
+                    "HOST"                  : [value: "${NODES}", hidden: false],
+                    "CORTX_BUILD"           : [value: "${CORTX_BUILD}", hidden: false] ,
+                    "CLUSTER_PASS"          : [value: "${NODE_PASS}", hidden: false],
+                    "DNS_SERVERS"           : [value: "${DNS_SERVERS}", hidden: false],
+                    "SEARCH_DOMAINS"        : [value: "${SEARCH_DOMAINS}", hidden: false],
+                    "CONTROLLER_USERNAME"   : [value: "${env.CONTROLLER_USERNAME}", hidden: false],
+                    "CONTROLLER_PASSWORD"   : [value: "${env.CONTROLLER_PASSWORD}", hidden: false],
+                    "SEAGATE_TIME_SERVER"   : [value: "${SEAGATE_TIME_SERVER}", hidden: false],
+                    "SETUP_TYPE"            : [value: "${SETUP_TYPE}", hidden: false]
+                ],
+                extras: '-v',
+                colorized: true
+            )
+        }
+    }    
 }
 def markNodeforCleanup() {
 	nodeLabel = "cleanup_req"
