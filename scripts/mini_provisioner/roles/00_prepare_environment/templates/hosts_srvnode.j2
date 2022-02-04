@@ -4,6 +4,6 @@ ansible_user=root
 ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 
 [nodes] 
-{% for node in NODE1.split(',') %}
+{% for node in HOST.split(',') %}
 srvnode-{{ loop.index }} ansible_host={{ node }}
 {% endfor %}
