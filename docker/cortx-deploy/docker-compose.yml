@@ -48,7 +48,7 @@ services:
     image: cortx-data:$TAG
     build:
       context: ./
-      dockerfile: ./cortx-data/Dockerfile
+      dockerfile: ./centos-7.9.2009/cortx-data/Dockerfile
       args:
         OS_RELEASE: 7.9.2009
         OS_IMAGE: centos
@@ -56,6 +56,18 @@ services:
         ENVIRONMENT: internal-ci
         CREATED_DATE: $CREATED_DATE
         BUILD_URL: http://cortx-storage.colo.seagate.com/releases/cortx/github/main/centos-7.9.2009/last_successful_prod/
+   rocky-cortx-data:
+    image: rocky-cortx-data:$TAG
+    build:
+      context: ./
+      dockerfile: ./rockylinux-8.4/cortx-data/Dockerfile
+      args:
+        OS_RELEASE: 8.4
+        OS_IMAGE: rockylinux/rockylinux
+        OS_TYPE: rockylinux
+        ENVIRONMENT: internal-ci
+        CREATED_DATE: $CREATED_DATE
+        BUILD_URL: http://cortx-storage.colo.seagate.com/releases/cortx/github/integration-custom-ci/rockylinux-8.4/custom-build-5003/      
   cortx-ha:
     image: cortx-ha:$TAG
     build:
