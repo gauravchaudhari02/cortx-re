@@ -60,7 +60,7 @@ services:
     image: rocky-cortx-data:$TAG
     build:
       context: ./
-      dockerfile: ./rockylinux-8.4/cortx-data/Dockerfile
+      dockerfile: ./rockylinux-8.4/rocky-cortx-data/Dockerfile
       args:
         OS_RELEASE: 8.4
         OS_IMAGE: rockylinux/rockylinux
