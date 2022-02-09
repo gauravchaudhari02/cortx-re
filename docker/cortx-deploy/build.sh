@@ -39,9 +39,10 @@ ARTFACT_URL="http://cortx-storage.colo.seagate.com/releases/cortx/github/"
 SERVICE=cortx-all
 COMPONENTS=""
 
-while getopts "b:p:t:r:e:s:h:" opt; do
+while getopts "b:o:p:t:r:e:s:h:" opt; do
     case $opt in
         b ) BUILD=$OPTARG;;
+        o ) OS=$OPTARG;;
         p ) DOCKER_PUSH=$OPTARG;;
         t ) TAG_LATEST=$OPTARG;;
         e ) ENVIRONMENT=$OPTARG;;
