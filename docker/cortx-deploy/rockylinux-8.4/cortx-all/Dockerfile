@@ -63,7 +63,7 @@ RUN yum install --nogpgcheck -y python3-pip \
 RUN yum install --nogpgcheck -y  $(sed 's/#.*//g' /opt/seagate/cortx/third-party-rpms.txt) \
     && yum clean all && rm -rf /var/cache/yum
     
-RUN yum install --nogpgcheck -y  $(sed 's/#.*//g' /opt/seagate/cortx/cortx-componenet-rpms.txt) \
+RUN yum install --nogpgcheck -y  $(sed 's/#.*//g' /opt/seagate/cortx/cortx-component-rpms.txt) \
     && yum clean all && rm -rf /var/cache/yum
     
 RUN rm -f /etc/machine-id && ln -s /etc/cortx/solution/node/id /etc/machine-id \
