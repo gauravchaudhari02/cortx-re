@@ -56,7 +56,7 @@ services:
         ENVIRONMENT: internal-ci
         CREATED_DATE: $CREATED_DATE
         BUILD_URL: http://cortx-storage.colo.seagate.com/releases/cortx/github/main/centos-7.9.2009/last_successful_prod/
-   rocky-cortx-data:
+  rocky-cortx-data:
     image: rocky-cortx-data:$TAG
     build:
       context: ./
