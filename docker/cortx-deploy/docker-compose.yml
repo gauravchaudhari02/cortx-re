@@ -63,7 +63,7 @@ services:
       dockerfile: ./rockylinux-8.4/rocky-cortx-data/Dockerfile
       args:
         OS_RELEASE: 8.4
-        OS_IMAGE: rockylinux
+        OS_IMAGE: rockylinux/rockylinux
         OS_TYPE: rockylinux
         ENVIRONMENT: internal-ci
         CREATED_DATE: $CREATED_DATE
