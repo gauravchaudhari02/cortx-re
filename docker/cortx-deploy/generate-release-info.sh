@@ -18,14 +18,27 @@
 # please email opensource@seagate.com or cortx-questions@seagate.com.
 #
 
+
+usage() 
+{ 
+        echo "Generate RELEASE.INFO for provided CORTX components docker image"
+        echo "Usage: $0 {CORTX_IMAGE_NAME}"
+        echo "  e.g. $0 cortx-all"
+        exit 1 
+}
+
+CORTX_IMAGE_NAME="$1"
+
 FILE_LOCATION="/opt/seagate/cortx"
 echo -e "Generating RELEASE.INFO file"
+
+
 
 #EXCLUDE_PACKAGES="cortx-motr-devel\|cortx-motr-tests-ut\|cortx-libsspl_sec-devel\|cortx-libsspl_sec-method_pki\|cortx-prvsnr-cli\|cortx-sspl-cli\|cortx-s3iamcli-devel\|cortx-sspl-test"
 pushd "$FILE_LOCATION" || exit
 cat <<EOF > RELEASE.INFO
 ---
-NAME: "CORTX"
+NAME: "${CORTX_IMAGE_NAME}"
 VERSION: "$VERSION"
 OS: $(cat /etc/redhat-release | sed -e 's/ $//g' -e 's/^/\"/g' -e 's/$/\"/g')
 DATETIME: $(date +"%d-%b-%Y %H:%M %Z" | sed -e 's/^/\"/g' -e 's/$/\"/g')
