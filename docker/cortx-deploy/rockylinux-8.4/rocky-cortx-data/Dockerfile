@@ -70,5 +70,5 @@ RUN yum install --nogpgcheck -y  $(sed 's/#.*//g' /opt/seagate/cortx/cortx-compo
 RUN rm -f /etc/machine-id && ln -s /etc/cortx/solution/node/id /etc/machine-id \
     && bash /opt/seagate/cortx/generate-release-info.sh
 
-RUN yum-config-manager --enable base,extras,updates && rm -rf /etc/yum.repos.d/"$(echo $BUILD_URL | awk -F '/' '{print $3}')"*.repo /etc/yum.repos.d/${OS_TYPE}-${OS_RELEASE}.repo \
+RUN rm -rf /etc/yum.repos.d/"$(echo $BUILD_URL | awk -F '/' '{print $3}')"*.repo /etc/yum.repos.d/${OS_TYPE}-${OS_RELEASE}.repo \
     && yum clean all && rm -rf /var/cache/yum
