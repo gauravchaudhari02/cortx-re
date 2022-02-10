@@ -33,7 +33,7 @@ ARG CREATED_DATE
 ARG VERSION
 
 LABEL maintainer="cortx.opensource@seagate.com" \
-      org.opencontainers.image.title="${CORTX_IMAGE^^}" \
+      org.opencontainers.image.title="${CORTX_IMAGE}" \
       org.opencontainers.image.description="CORTX is 100% Open Source, Distributed object storage system designed for great efficiency, Massive capacity, and High HDD-utilization" \
       org.opencontainers.image.revision=$GIT_HASH \
       org.opencontainers.image.created=$CREATED_DATE
