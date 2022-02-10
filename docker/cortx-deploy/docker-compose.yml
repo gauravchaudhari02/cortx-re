@@ -64,6 +64,7 @@ services:
       args:
         OS_RELEASE: 8.4
         OS_IMAGE: rockylinux/rockylinux
+        CORTX_IMAGE: rocky-cortx-data        
         OS_TYPE: rockylinux
         ENVIRONMENT: internal-ci
         CREATED_DATE: $CREATED_DATE
