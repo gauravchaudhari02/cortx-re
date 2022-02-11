@@ -20,7 +20,7 @@ PyYAML==5.4.1 #cortx-hare
 ply==3.11 #cortx-hare
 psutil==5.8.0 #cortx-hare
 idna==2.10 #cortx-hare
-aiohttp==3.7.4.post0 #cortx-hare
+#aiohttp==3.7.4.post0 cortx-hare
 click==8.0.1 #cortx-hare
 dataclasses==0.8 #cortx-hare
 python-consul==1.1.0 #cortx-hare
