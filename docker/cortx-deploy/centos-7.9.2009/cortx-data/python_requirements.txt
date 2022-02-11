@@ -22,7 +22,6 @@ psutil==5.8.0 #cortx-hare
 idna==2.10 #cortx-hare
 #aiohttp==3.7.4.post0 cortx-hare
 click==8.0.1 #cortx-hare
-dataclasses==0.8 #cortx-hare
 python-consul==1.1.0 #cortx-hare
 simplejson==3.17.2 #cortx-hare
 tcpping==0.2 #cortx-hare
