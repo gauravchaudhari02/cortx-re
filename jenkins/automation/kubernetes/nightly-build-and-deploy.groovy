@@ -16,7 +16,7 @@ pipeline {
         CORTX_RE_REPO = "https://github.com/Seagate/cortx-re/"
         DOCKER_IMAGE_LOCATION = "https://github.com/Seagate/cortx-re/pkgs/container/cortx-all"
         LOCAL_REG_CRED = credentials('local-registry-access')
-        GITHUB_CRED = credentials('shailesh-github')
+        GITHUB_CRED = credentials('cortx-admin-github')
         VERSION = "2.0.0"
     }
     parameters {
