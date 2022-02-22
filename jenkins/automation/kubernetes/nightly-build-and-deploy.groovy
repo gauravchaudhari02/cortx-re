@@ -97,9 +97,7 @@ pipeline {
                    docker login ghcr.io -u ${GITHUB_CRED_USR} -p ${GITHUB_CRED_PSW}
                    
                    docker push ghcr.io/gauravchaudhari02/cortx-all:${VERSION}-${BUILD_NUMBER}
-                   
-                   docker rmi ghcr.io/gauravchaudhari02/cortx-all:${VERSION}-latest
-                   docker rmi ghcr.io/gauravchaudhari02/cortx-all:${VERSION}-${BUILD_NUMBER}
+
                 '''
            }
         }
