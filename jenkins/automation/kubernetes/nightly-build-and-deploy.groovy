@@ -74,33 +74,33 @@ pipeline {
             }
         }
 
-        stage('Push Image to GitHub') {
-            agent {
-                node {
-                label 'docker-image-builder-centos-7.9.2009'
-                }
-            }
-           steps {
-                sh label: 'Push Image to GitHub', script: '''                   
-                   systemctl status docker
-                   /usr/local/bin/docker-compose --version
-                   echo \'y\' | docker image prune
-                   docker pull $CORTX_IMAGE
+        // stage('Push Image to GitHub') {
+        //     agent {
+        //         node {
+        //         label 'docker-image-builder-centos-7.9.2009'
+        //         }
+        //     }
+        //    steps {
+        //         sh label: 'Push Image to GitHub', script: '''                   
+        //            systemctl status docker
+        //            /usr/local/bin/docker-compose --version
+        //            echo \'y\' | docker image prune
+        //            docker pull $CORTX_IMAGE
 
-                   echo "\n RPM Build URL used for Nightly Image"
-                   docker inspect $CORTX_IMAGE | jq -r '.[] | (.ContainerConfig.Cmd)' | grep 'BUILD_URL='
+        //            echo "\n RPM Build URL used for Nightly Image"
+        //            docker inspect $CORTX_IMAGE | jq -r '.[] | (.ContainerConfig.Cmd)' | grep 'BUILD_URL='
 
-                   #Update VERSION details in RELEASE.INFO file
+        //            #Update VERSION details in RELEASE.INFO file
 
-                   docker commit $(docker run -d ${CORTX_IMAGE} sed -i /VERSION/s/\\"2.0.0.*\\"/\\"${VERSION}-${BUILD_NUMBER}\\"/ /opt/seagate/cortx/RELEASE.INFO) ghcr.io/gauravchaudhari02/cortx-all:${VERSION}-${BUILD_NUMBER}
+        //            docker commit $(docker run -d ${CORTX_IMAGE} sed -i /VERSION/s/\\"2.0.0.*\\"/\\"${VERSION}-${BUILD_NUMBER}\\"/ /opt/seagate/cortx/RELEASE.INFO) ghcr.io/gauravchaudhari02/cortx-all:${VERSION}-${BUILD_NUMBER}
 
-                   docker login ghcr.io -u ${GITHUB_CRED_USR} -p ${GITHUB_CRED_PSW}
+        //            docker login ghcr.io -u ${GITHUB_CRED_USR} -p ${GITHUB_CRED_PSW}
                    
-                   docker push ghcr.io/gauravchaudhari02/cortx-all:${VERSION}-${BUILD_NUMBER}
+        //            docker push ghcr.io/gauravchaudhari02/cortx-all:${VERSION}-${BUILD_NUMBER}
 
-                '''
-           }
-        }
+        //         '''
+        //    }
+        // }
 
         stage ("K8s QA Sanity") {
             steps {
@@ -110,7 +110,7 @@ pipeline {
                         parameters: [
                             string(name: 'M_NODE', value: "${env.master_node}"),
                             password(name: 'HOST_PASS', value: "${env.hostpasswd}"),
-                            string(name: 'CORTX_IMAGE', value: "ghcr.io/gauravchaudhari02/cortx-all:${VERSION}-${BUILD_NUMBER}"),
+                            string(name: 'CORTX_IMAGE', value: "ghcr.io/seagate/cortx-all:2.0.0-648"),
                             string(name: 'NUM_NODES', value: "${env.numberofnodes}")
                         ]
                         env.Sanity_Failed = qaSanity.buildVariables.Sanity_Failed
