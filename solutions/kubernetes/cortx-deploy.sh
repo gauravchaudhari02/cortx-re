@@ -41,6 +41,8 @@ function check_params {
     if [ -z "$CORTX_SCRIPTS_BRANCH" ]; then echo "CORTX_SCRIPTS_BRANCH not provided.Exiting..."; exit 1; fi
     if [ -z "$CORTX_ALL_IMAGE" ]; then echo "CORTX_ALL_IMAGE not provided.Exiting..."; exit 1; fi
     if [ -z "$CORTX_SERVER_IMAGE" ]; then echo "CORTX_SERVER_IMAGE not provided.Exiting..."; exit 1; fi
+    if [ -z "$CORTX_DATA_IMAGE" ]; then echo "CORTX_DATA_IMAGE not provided.Exiting..."; exit 1; fi
+    if [ -z "$CORTX_CONTROL_IMAGE" ]; then echo "CORTX_CONTROL_IMAGE not provided.Exiting..."; exit 1; fi
     if [ -z "$SOLUTION_CONFIG_TYPE" ]; then echo "SOLUTION_CONFIG_TYPE not provided.Exiting..."; exit 1; fi
     if [ -z "$SNS_CONFIG" ]; then SNS_CONFIG="1+0+0"; fi
     if [ -z "$DIX_CONFIG" ]; then DIX_CONFIG="1+0+0"; fi
@@ -53,7 +55,7 @@ function check_params {
 function pdsh_worker_exec {
     # commands to run in parallel on pdsh hosts (workers nodes).
     commands=(
-       "export CORTX_SERVER_IMAGE=$CORTX_SERVER_IMAGE && export CORTX_ALL_IMAGE=$CORTX_ALL_IMAGE && export CORTX_SCRIPTS_REPO=$CORTX_SCRIPTS_REPO && export CORTX_SCRIPTS_BRANCH=$CORTX_SCRIPTS_BRANCH && /var/tmp/cortx-deploy-functions.sh --setup-worker"
+       "export CORTX_SERVER_IMAGE=$CORTX_SERVER_IMAGE && export CORTX_ALL_IMAGE=$CORTX_ALL_IMAGE && export CORTX_DATA_IMAGE=$CORTX_DATA_IMAGE && export CORTX_CONTROL_IMAGE=$CORTX_CONTROL_IMAGE &&  export CORTX_SCRIPTS_REPO=$CORTX_SCRIPTS_REPO && export CORTX_SCRIPTS_BRANCH=$CORTX_SCRIPTS_BRANCH && /var/tmp/cortx-deploy-functions.sh --setup-worker"
     )
     for cmds in "${commands[@]}"; do
        pdsh -w ^$1 $cmds
@@ -88,7 +90,9 @@ function setup_cluster {
        ssh -o 'StrictHostKeyChecking=no' "$PRIMARY_NODE" "
        export SOLUTION_CONFIG_TYPE=$SOLUTION_CONFIG_TYPE && 
        export CORTX_SERVER_IMAGE=$CORTX_SERVER_IMAGE && 
-       export CORTX_ALL_IMAGE=$CORTX_ALL_IMAGE && 
+       export CORTX_ALL_IMAGE=$CORTX_ALL_IMAGE &&
+       export CORTX_DATA_IMAGE=$CORTX_DATA_IMAGE &&
+       export CORTX_CONTROL_IMAGE=$CORTX_CONTROL_IMAGE && 
        export CORTX_SCRIPTS_REPO=$CORTX_SCRIPTS_REPO && 
        export CORTX_SCRIPTS_BRANCH=$CORTX_SCRIPTS_BRANCH && 
        export SNS_CONFIG=$SNS_CONFIG && 
@@ -121,7 +125,9 @@ EOF
                ssh -o 'StrictHostKeyChecking=no' "$primary_node" "
                export SOLUTION_CONFIG_TYPE=$SOLUTION_CONFIG_TYPE && 
                export CORTX_SERVER_IMAGE=$CORTX_SERVER_IMAGE && 
-               export CORTX_ALL_IMAGE=$CORTX_ALL_IMAGE && 
+               export CORTX_ALL_IMAGE=$CORTX_ALL_IMAGE &&
+               export CORTX_DATA_IMAGE=$CORTX_DATA_IMAGE &&
+               export CORTX_CONTROL_IMAGE=$CORTX_CONTROL_IMAGE && 
                export CORTX_SCRIPTS_REPO=$CORTX_SCRIPTS_REPO && 
                export CORTX_SCRIPTS_BRANCH=$CORTX_SCRIPTS_BRANCH && 
                export SNS_CONFIG=$SNS_CONFIG && 
