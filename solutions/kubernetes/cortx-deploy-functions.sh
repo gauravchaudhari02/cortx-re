@@ -239,10 +239,15 @@ function openldap_requiremenrs(){
 
 function execute_prereq(){
     echo "Pulling latest CORTX-ALL image"
+<<<<<<< HEAD
     docker pull $CORTX_ALL_IMAGE || echo "Failed to pull $CORTX_ALL_IMAGE"
     docker pull $CORTX_SERVER_IMAGE || echo "Failed to pull $CORTX_SERVER_IMAGE"
     docker pull $CORTX_DATA_IMAGE || echo "Failed to pull $CORTX_DATA_IMAGE"
     docker pull $CORTX_CONTROL_IMAGE || echo "Failed to pull $CORTX_CONTROL_IMAGE"
+=======
+    docker pull $CORTX_ALL_IMAGE || { echo "Failed to pull $CORTX_ALL_IMAGE"; exit 1; }
+    docker pull $CORTX_SERVER_IMAGE || { echo "Failed to pull $CORTX_SERVER_IMAGE"; exit 1; }
+>>>>>>> 678cf8b22b35972a58dec5a75403116267443fdc
     pushd $SCRIPT_LOCATION/k8_cortx_cloud
         findmnt $SYSTEM_DRIVE && umount -l $SYSTEM_DRIVE
         ./prereq-deploy-cortx-cloud.sh $SYSTEM_DRIVE
@@ -384,18 +389,9 @@ echo "---------------------------------------[ hctl status ]--------------------
 }
 
 function io_exec(){
-    CURRENT_OS=$(cut -d ' ' -f 1,4 < /etc/redhat-release)
-    if [[ "$CURRENT_OS" == "Rocky 8.4" ]]; then
-        echo "S3 IO Testing not enabled for Rocky Linux yet. Skipping"
-    else
-        pushd /var/tmp/
-            chmod +x *.sh
-            # "Setting up S3 client..."
-            ./s3-client-setup.sh
-            # "Running IO test..."
-            ./io-testing.sh
-        popd
-    fi
+    pushd /var/tmp/
+        ./io-testing.sh
+    popd
 }
 
 function logs_generation(){
