@@ -239,15 +239,10 @@ function openldap_requiremenrs(){
 
 function execute_prereq(){
     echo "Pulling latest CORTX-ALL image"
-<<<<<<< HEAD
     docker pull $CORTX_ALL_IMAGE || echo "Failed to pull $CORTX_ALL_IMAGE"
     docker pull $CORTX_SERVER_IMAGE || echo "Failed to pull $CORTX_SERVER_IMAGE"
     docker pull $CORTX_DATA_IMAGE || echo "Failed to pull $CORTX_DATA_IMAGE"
     docker pull $CORTX_CONTROL_IMAGE || echo "Failed to pull $CORTX_CONTROL_IMAGE"
-=======
-    docker pull $CORTX_ALL_IMAGE || { echo "Failed to pull $CORTX_ALL_IMAGE"; exit 1; }
-    docker pull $CORTX_SERVER_IMAGE || { echo "Failed to pull $CORTX_SERVER_IMAGE"; exit 1; }
->>>>>>> 678cf8b22b35972a58dec5a75403116267443fdc
     pushd $SCRIPT_LOCATION/k8_cortx_cloud
         findmnt $SYSTEM_DRIVE && umount -l $SYSTEM_DRIVE
         ./prereq-deploy-cortx-cloud.sh $SYSTEM_DRIVE
