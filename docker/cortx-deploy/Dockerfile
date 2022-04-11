@@ -70,10 +70,10 @@ RUN yum --nogpgcheck -y --disablerepo="EOS_Rocky_8_OS_x86_64_Rocky_8" install li
     && yum install --nogpgcheck -y  $(sed 's/#.*//g' /opt/seagate/cortx/third-party-rpms.txt) \
     && yum clean all && rm -rf /var/cache/yum
     
-RUN yum install --nogpgcheck -y  $(sed 's/#.*//g' /opt/seagate/cortx/cortx-componenet-rpms.txt) \
+RUN yum install --nogpgcheck -y --exclude=ruby*  $(sed 's/#.*//g' /opt/seagate/cortx/cortx-componenet-rpms.txt) \
     && yum install -y --nogpgcheck --downloadonly --downloaddir=/opt/seagate/cortx/debug-packages cortx-hare-debuginfo cortx-motr-debuginfo \
     && yum clean all && rm -rf /var/cache/yum
-    
+
 RUN rm -f /etc/machine-id && ln -s /etc/cortx/solution/node/id /etc/machine-id \
     && bash /opt/seagate/cortx/generate-release-info.sh
 
