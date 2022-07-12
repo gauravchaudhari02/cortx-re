@@ -114,7 +114,7 @@ do
         fi
 
         pushd "$dir" || exit
-                echo -e "\t--[ Check-ins for $dir from $START_BUILD ($start_hash) to $TARGET_BUILD ($target_hash) ]--" >> $report_file
+                # echo -e "\t--[ Check-ins for $dir from $START_BUILD ($start_hash) to $TARGET_BUILD ($target_hash) ]--" >> $report_file
                 commit_sha="$(git log "$start_hash..$target_hash" --oneline --pretty=format:"%h")";
                 if [ "$commit_sha" ]; then
                         for commit in $commit_sha; do
@@ -129,7 +129,7 @@ do
                                 fi               
                         done
                 else
-                        echo -e "No Changes" >> $report_file
+                        # echo -e "No Changes" >> $report_file
                         echo -e "---------------------------------------------------------------------------------------------" >> $report_file
                 fi
         popd || exit
