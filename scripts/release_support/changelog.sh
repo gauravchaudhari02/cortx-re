@@ -40,11 +40,11 @@ declare -A COMPONENT_LIST=(
 [cortx-motr]="https://github.com/Seagate/cortx-motr.git"
 [cortx-hare]="https://github.com/Seagate/cortx-hare.git"
 [cortx-ha]="https://github.com/Seagate/cortx-ha.git"
-[cortx-provisioner]="https://github.com/Seagate/cortx-prvsnr.git"
-[cortx-csm_agent]="https://github.com/Seagate/cortx-manager.git"
-[cortx-py-utils]="https://github.com/Seagate/cortx-utils.git"
+[cortx-prvsnr]="https://github.com/Seagate/cortx-prvsnr.git"
+[cortx-manager]="https://github.com/Seagate/cortx-manager.git"
+[cortx-utils]="https://github.com/Seagate/cortx-utils.git"
 [cortx-rgw-integration]="https://github.com/Seagate/cortx-rgw-integration.git"
-[ceph-base]="https://github.com/Seagate/cortx-rgw"
+[cortx-rgw]="https://github.com/Seagate/cortx-rgw"
 )
 
 clone_dir="/root/git_build_checkin_stats"
@@ -121,7 +121,7 @@ do
                                 original_commit_message=$(git log --oneline -n 1 "$commit" --pretty=format:"%s")
                                 filtered_commit_message=$(sed -e 's/([^()]*)//g' <<< $original_commit_message)
                                 pr_number=$(awk -F '[()]' '{print $2}' <<< $original_commit_message)
-                                pr_url=$(curl -s -H "Accept: application/json" -H "Authorization: token $ACCESS_TOKEN" https://api.github.com/repos/seagate/cortx-re/commits/"$commit"/pulls | jq '.[] | .html_url' | sed "s/\"//g")
+                                pr_url=$(curl -s -H "Accept: application/json" -H "Authorization: token $ACCESS_TOKEN" https://api.github.com/repos/seagate/"$component"/commits/"$commit"/pulls | jq '.[] | .html_url' | sed "s/\"//g")
                                 if [ "$pr_number" ] && [ "$pr_url" ]; then
                                         echo "$filtered_commit_message [$pr_number]($pr_url)" >> $report_file
                                 else
@@ -129,13 +129,14 @@ do
                                 fi               
                         done
                 else
+                        echo "No changes"
                         # echo -e "No Changes" >> $report_file
-                        echo -e "---------------------------------------------------------------------------------------------" >> $report_file
+                        # echo -e "---------------------------------------------------------------------------------------------" >> $report_file
                 fi
         popd || exit
 done
 popd || exit
 
-echo -e "---------------------------------------------------------------------------------------------"
+# echo -e "---------------------------------------------------------------------------------------------"
 echo -e "----------------------------------[ Printing report ]----------------------------------------"
 cat $clone_dir/clone/git-build-checkin-report.md
