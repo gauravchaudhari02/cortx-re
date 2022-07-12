@@ -40,7 +40,7 @@ pipeline {
     post {
         always {
             script {
-                archiveArtifacts artifacts: "CHANGESET.txt", onlyIfSuccessful: false, allowEmptyArchive: true
+                archiveArtifacts artifacts: "CHANGESET.md", onlyIfSuccessful: false, allowEmptyArchive: true
             }
         }
     }
