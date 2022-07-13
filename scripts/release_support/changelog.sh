@@ -54,6 +54,7 @@ report_file="../git-build-checkin-report.md"
 test -d $clone_dir/clone && $(rm -rf $clone_dir/clone;mkdir -p $clone_dir/clone) || mkdir -p $clone_dir/clone
 export TZ=$time_zone;ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+echo "\t--[ Check-ins from $(awk -F":" '{print $2}' <<< $START_BUILD) to $(awk -F":" '{print $2}' <<< $TARGET_BUILD) ]--" >> $clone_dir/clone/git-build-checkin-report.md
 pushd $clone_dir/clone || exit
 
 if [ -z "$BUILD_LOCATION" ]; then
@@ -84,7 +85,6 @@ else
         wget -q "$BUILD_LOCATION"/"$TARGET_BUILD"/dev/RELEASE.INFO -O target_build_manifest.txt
 fi
 
-echo "\t--[ Check-ins from $START_BUILD to $TARGET_BUILD ]--" >> $report_file
 for component in "${!COMPONENT_LIST[@]}"
 do
         echo "Component:$component"
