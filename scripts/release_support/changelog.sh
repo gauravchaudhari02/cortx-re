@@ -84,6 +84,7 @@ else
         wget -q "$BUILD_LOCATION"/"$TARGET_BUILD"/dev/RELEASE.INFO -O target_build_manifest.txt
 fi
 
+echo -e "\t--[ Check-ins from $START_BUILD to $TARGET_BUILD ]--" >> $report_file
 for component in "${!COMPONENT_LIST[@]}"
 do
         echo "Component:$component"
@@ -112,8 +113,7 @@ do
                 start_hash=$(grep "$component-" start_build_manifest.txt | head -1 | awk -F['_'] '{print $2}' | sed 's/git//g'|cut -d. -f1); echo "$start_hash"
                 target_hash=$(grep "$component-" target_build_manifest.txt | head -1 | awk -F['_'] '{print $2}' | sed 's/git//g'|cut -d. -f1); echo "$target_hash"
         fi
-
-        echo -e "\t--[ Check-ins from $START_BUILD to $TARGET_BUILD ]--" >> $report_file        
+        
         pushd "$dir" || exit
                 # echo -e "\t--[ Check-ins for $dir from $START_BUILD ($start_hash) to $TARGET_BUILD ($target_hash) ]--" >> $report_file
                 commit_sha="$(git log "$start_hash..$target_hash" --oneline --pretty=format:"%h")";
