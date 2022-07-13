@@ -49,12 +49,12 @@ declare -A COMPONENT_LIST=(
 
 clone_dir="/root/git_build_checkin_stats"
 time_zone="Asia/Calcutta"
-report_file="../git-build-checkin-report.md"
+report_file="$clone_dir/clone/git-build-checkin-report.md"
 
 test -d $clone_dir/clone && $(rm -rf $clone_dir/clone;mkdir -p $clone_dir/clone) || mkdir -p $clone_dir/clone
 export TZ=$time_zone;ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-echo "\t--[ Check-ins from $(awk -F":" '{print $2}' <<< $START_BUILD) to $(awk -F":" '{print $2}' <<< $TARGET_BUILD) ]--" >> $clone_dir/clone/git-build-checkin-report.md
+echo "\t--[ Check-ins from $(awk -F":" '{print $2}' <<< $START_BUILD) to $(awk -F":" '{print $2}' <<< $TARGET_BUILD) ]--" >> $report_file
 pushd $clone_dir/clone || exit
 
 if [ -z "$BUILD_LOCATION" ]; then
@@ -140,4 +140,4 @@ popd || exit
 
 # echo -e "---------------------------------------------------------------------------------------------"
 echo -e "----------------------------------[ Printing report ]----------------------------------------"
-cat $clone_dir/clone/git-build-checkin-report.md
+cat $report_file
