@@ -23,10 +23,10 @@ TARGET_BUILD=$2
 BUILD_LOCATION=$3
 
 function usage() {
-echo "No inputs provided exiting..."
-echo "Please provide start and target build numbers.Script should be executed as.."
-echo "$0 START_BUILD TARGET_BUILD"
-exit 1
+        echo "No inputs provided exiting..."
+        echo "Please provide start and target build numbers.Script should be executed as.."
+        echo "$0 START_BUILD TARGET_BUILD"
+        exit 1
 }
 
 if [ $# -eq 0 ]; then
@@ -120,9 +120,9 @@ do
                         for commit in $commit_sha; do
                                 original_commit_message=$(git log --oneline -n 1 "$commit" --pretty=format:"%s")
                                 filtered_commit_message=$(sed -e 's/([^()]*)//g' <<< $original_commit_message)
-                                pr_number=$(awk -F '[()]' '{print $2}' <<< $original_commit_message)
-                                pr_url=$(curl -s -H "Accept: application/json" -H "Authorization: token $ACCESS_TOKEN" https://api.github.com/repos/seagate/"$component"/commits/"$commit"/pulls | jq '.[] | .html_url' | sed "s/\"//g")
-                                if [ "$pr_number" ] || [ "$pr_url" ]; then
+                                pr_number=$(curl -s -H "Accept: application/json" -H "Authorization: token $ACCESS_TOKEN" https://api.github.com/repos/seagate/"$component"/commits/"$commit"/pulls | jq '.[].number')
+                                pr_url=$(curl -s -H "Accept: application/json" -H "Authorization: token $ACCESS_TOKEN" https://api.github.com/repos/seagate/"$component"/commits/"$commit"/pulls | jq '.[].html_url' | sed "s/\"//g")
+                                if [ "$pr_number" ] && [ "$pr_url" ]; then
                                         echo "$filtered_commit_message [$pr_number]($pr_url)" >> $report_file
                                 else
                                         echo "$filtered_commit_message" >> $report_file
