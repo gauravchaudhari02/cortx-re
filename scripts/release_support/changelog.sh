@@ -84,7 +84,7 @@ else
         wget -q "$BUILD_LOCATION"/"$TARGET_BUILD"/dev/RELEASE.INFO -O target_build_manifest.txt
 fi
 
-echo -e "\t--[ Check-ins from $START_BUILD to $TARGET_BUILD ]--" >> $report_file
+echo "\t--[ Check-ins from $START_BUILD to $TARGET_BUILD ]--" >> $report_file
 for component in "${!COMPONENT_LIST[@]}"
 do
         echo "Component:$component"
