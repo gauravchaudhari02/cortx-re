@@ -17,10 +17,10 @@ pipeline {
  <h6> e.g. http://cortx-storage.colo.seagate.com/releases/cortx/github/main/rockylinux-8.4/5478/dev/RELEASE.INFO </h6><br>OR<br><h6>cortx-docker.colo.seagate.com/seagate/cortx-<component>:2.0.0-27-motr-pr</h6>''')
     }
 
-    stages {
+    stages {    
         stage ('Checkout Script') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: 'tag-based-build']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'AuthorInChangelog']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'cortx-admin-github', url: 'https://github.com/gauravchaudhari02/cortx-re']]])
+                checkout([$class: 'GitSCM', branches: [[name: 'main']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'AuthorInChangelog']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'cortx-admin-github', url: 'https://github.com/Seagate/cortx-re']]])
             }
         }
         
