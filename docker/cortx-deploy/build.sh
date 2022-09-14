@@ -121,8 +121,6 @@ fi
 
 CREATED_DATE=$(date -u +'%Y-%m-%d %H:%M:%S%:z')
 
-export DOCKER_BUILDKIT=1
-export COMPOSE_DOCKER_CLI_BUILD=1
 docker-compose -f ./docker-compose.yml build --parallel --force-rm --compress --build-arg GIT_HASH="$GIT_HASH" --build-arg VERSION="$VERSION-$DOCKER_BUILD_BUILD" --build-arg CREATED_DATE="$CREATED_DATE" --build-arg BUILD_URL=$BUILD_URL --build-arg ENVIRONMENT=$ENVIRONMENT --build-arg OS=$OS --build-arg OS_TYPE=$OS_TYPE --build-arg OS_RELEASE=$OS_RELEASE --build-arg CORTX_VERSION="$CORTX_VERSION" $SERVICE
 
 
